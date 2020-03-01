@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AudioPlayer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">program</a> &gt; <a href="index.source.html" class="el_package">invadem</a> &gt; <span class="el_source">AudioPlayer.java</span></div><h1>AudioPlayer.java</h1><pre class="source lang-java linenums">package invadem;
+import java.io.IOException;
+import java.net.URL;
+import javax.sound.sampled.*;
+import java.util.Random;
+import java.util.Arrays;
+
+public class AudioPlayer{
+
+  private Random random;
+  private SoundEffect[] tankShotSounds;
+  private SoundEffect[] nextLevelSounds;
+  private SoundEffect[] encouragementSounds;
+  private int nextEncouragement;
+
+<span class="fc" id="L16">  public enum SoundEffect{</span>
+<span class="fc" id="L17">    SHOT1(&quot;shot1.wav&quot;),</span>
+<span class="fc" id="L18">    SHOT2(&quot;shot2.wav&quot;),</span>
+<span class="fc" id="L19">    SHOT3(&quot;shot3.wav&quot;),</span>
+<span class="fc" id="L20">    SHOT4(&quot;shot4.wav&quot;),</span>
+<span class="fc" id="L21">    SHOT5(&quot;shot5.wav&quot;),</span>
+<span class="fc" id="L22">    SHOT6(&quot;shot6.wav&quot;),</span>
+<span class="fc" id="L23">    SHOT7(&quot;shot7.wav&quot;),</span>
+<span class="fc" id="L24">    SHOT8(&quot;shot8.wav&quot;),</span>
+<span class="fc" id="L25">    SHOT9(&quot;shot9.wav&quot;),</span>
+<span class="fc" id="L26">    SHOT10(&quot;shot10.wav&quot;),</span>
+<span class="fc" id="L27">    NEXTLEVEL1(&quot;nextlevel1.wav&quot;),</span>
+<span class="fc" id="L28">    NEXTLEVEL2(&quot;nextlevel2.wav&quot;),</span>
+<span class="fc" id="L29">    NEXTLEVEL3(&quot;nextlevel3.wav&quot;),</span>
+<span class="fc" id="L30">    NEXTLEVEL4(&quot;nextlevel4.wav&quot;),</span>
+<span class="fc" id="L31">    NEXTLEVEL5(&quot;nextlevel5.wav&quot;),</span>
+<span class="fc" id="L32">    ENCOURAGEMENT1(&quot;encouragement1.wav&quot;),</span>
+<span class="fc" id="L33">    ENCOURAGEMENT2(&quot;encouragement2.wav&quot;),</span>
+<span class="fc" id="L34">    ENCOURAGEMENT3(&quot;encouragement3.wav&quot;),</span>
+<span class="fc" id="L35">    ENCOURAGEMENT4(&quot;encouragement4.wav&quot;),</span>
+<span class="fc" id="L36">    ENCOURAGEMENT5(&quot;encouragement5.wav&quot;),</span>
+<span class="fc" id="L37">    ENEMYSHOT1(&quot;enemyshot1.wav&quot;),</span>
+<span class="fc" id="L38">    ENEMYSHOT2(&quot;enemyshot2.wav&quot;),</span>
+<span class="fc" id="L39">    EXPLOSION(&quot;explosion.wav&quot;),</span>
+<span class="fc" id="L40">    EXPLOSION2(&quot;explosion2.wav&quot;),</span>
+<span class="fc" id="L41">    GAMEOVER(&quot;gameover.wav&quot;),</span>
+<span class="fc" id="L42">    TANKDAMAGE(&quot;ow.wav&quot;);</span>
+
+    private Clip clip;
+    private boolean on; //checked in testing framework
+
+<span class="fc" id="L47">    SoundEffect(String fileName){</span>
+<span class="fc" id="L48">      URL url = this.getClass().getClassLoader().getResource(fileName);</span>
+      try{
+<span class="fc" id="L50">        AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);</span>
+<span class="fc" id="L51">        clip = AudioSystem.getClip();</span>
+<span class="fc" id="L52">        clip.open(audioIn);</span>
+      }
+<span class="nc" id="L54">      catch (UnsupportedAudioFileException e){</span>
+<span class="nc" id="L55">        e.printStackTrace();</span>
+      }
+<span class="nc" id="L57">      catch (LineUnavailableException e){</span>
+<span class="nc" id="L58">        e.printStackTrace();</span>
+      }
+<span class="nc" id="L60">      catch (IOException e){</span>
+<span class="nc" id="L61">        e.printStackTrace();</span>
+<span class="pc" id="L62">      }</span>
+<span class="fc" id="L63">    }</span>
+
+    public void play(){
+<span class="fc bfc" id="L66" title="All 2 branches covered.">      if(clip.isRunning()){</span>
+<span class="fc" id="L67">        clip.stop();</span>
+      }
+<span class="fc" id="L69">      clip.setFramePosition(0);</span>
+<span class="fc" id="L70">      clip.start();</span>
+<span class="fc" id="L71">      on = true;</span>
+<span class="fc" id="L72">    }</span>
+
+    public boolean isRunning(){
+<span class="fc bfc" id="L75" title="All 2 branches covered.">      if(clip.isRunning()){</span>
+<span class="fc" id="L76">        return true;</span>
+      }
+<span class="fc" id="L78">      return false;</span>
+    }
+
+    public void stop(){
+<span class="fc" id="L82">      clip.stop();</span>
+<span class="fc" id="L83">      on = false;</span>
+<span class="fc" id="L84">    }</span>
+
+    public boolean isOn(){
+<span class="fc" id="L87">      return this.on;</span>
+    }
+
+  }
+<span class="fc" id="L91">  public AudioPlayer(){</span>
+<span class="fc" id="L92">    this.random = new Random();</span>
+<span class="fc" id="L93">    this.tankShotSounds = Arrays.copyOfRange(SoundEffect.values(), 0, 10);</span>
+<span class="fc" id="L94">    this.nextLevelSounds = Arrays.copyOfRange(SoundEffect.values(), 10, 15);</span>
+<span class="fc" id="L95">    this.encouragementSounds = Arrays.copyOfRange(SoundEffect.values(), 15, 20);</span>
+<span class="fc" id="L96">    this.nextEncouragement = 5000;</span>
+<span class="fc" id="L97">  }</span>
+
+  public SoundEffect[] getSoundEffects(){
+<span class="fc" id="L100">    return SoundEffect.values();</span>
+  }
+
+  public void playTankShot(){
+<span class="fc" id="L104">    int randomShotIndex = this.random.nextInt(10);</span>
+<span class="fc" id="L105">    tankShotSounds[randomShotIndex].play();</span>
+
+<span class="fc" id="L107">  }</span>
+
+  public void playEnemyShot(boolean poweredShot){
+<span class="fc bfc" id="L110" title="All 2 branches covered.">    if(poweredShot){</span>
+<span class="fc" id="L111">      SoundEffect.ENEMYSHOT2.play();</span>
+    }
+    else{
+<span class="fc" id="L114">      SoundEffect.ENEMYSHOT1.play();</span>
+    }
+<span class="fc" id="L116">  }</span>
+
+  public void playExplosion(){
+<span class="fc" id="L119">    SoundEffect.EXPLOSION.play();</span>
+<span class="fc" id="L120">  }</span>
+
+  public void playInvaderExplosion(){
+<span class="fc" id="L123">    SoundEffect.EXPLOSION2.play();</span>
+<span class="fc" id="L124">  }</span>
+
+  public void playTankDamage(){
+<span class="fc" id="L127">    SoundEffect.TANKDAMAGE.play();</span>
+<span class="fc" id="L128">  }</span>
+
+  public void playNextLevel(Score level){
+<span class="fc" id="L131">    muteShotsAndExplosions();</span>
+<span class="fc" id="L132">    int nextLevelIndex = 0;</span>
+<span class="fc bfc" id="L133" title="All 2 branches covered.">    if (level.getScore() &gt;= 5){</span>
+<span class="fc" id="L134">      nextLevelIndex += 4;</span>
+    }
+    else{
+<span class="fc" id="L137">      nextLevelIndex = level.getScore() - 1;</span>
+    }
+<span class="fc" id="L139">    nextLevelSounds[nextLevelIndex].play();</span>
+<span class="fc" id="L140">  }</span>
+
+  public void playGameOver(){
+<span class="fc" id="L143">    SoundEffect.GAMEOVER.play();</span>
+<span class="fc" id="L144">    muteShotsAndExplosions();</span>
+<span class="fc" id="L145">  }</span>
+
+  public void resetEncouragement(){
+<span class="fc" id="L148">    this.nextEncouragement = 5000;</span>
+<span class="fc" id="L149">  }</span>
+
+  public void playEncouragement(Score currentScore){
+<span class="fc bfc" id="L152" title="All 2 branches covered.">    if (currentScore.getScore() &gt; nextEncouragement){</span>
+<span class="fc" id="L153">      int randomEncouragementIndex = this.random.nextInt(5);</span>
+<span class="fc" id="L154">      encouragementSounds[randomEncouragementIndex].play();</span>
+<span class="fc" id="L155">      nextEncouragement += 5000;</span>
+    }
+
+<span class="fc" id="L158">  }</span>
+
+  public void muteShotsAndExplosions(){
+<span class="fc bfc" id="L161" title="All 2 branches covered.">    for(SoundEffect sound:tankShotSounds){</span>
+<span class="fc bfc" id="L162" title="All 2 branches covered.">      if (sound.isRunning()){</span>
+<span class="fc" id="L163">        sound.stop();</span>
+      }
+    }
+<span class="fc bfc" id="L166" title="All 2 branches covered.">    if (SoundEffect.ENEMYSHOT1.isRunning()){</span>
+<span class="fc" id="L167">      SoundEffect.ENEMYSHOT1.stop();</span>
+    }
+<span class="fc bfc" id="L169" title="All 2 branches covered.">    if (SoundEffect.ENEMYSHOT2.isRunning()){</span>
+<span class="fc" id="L170">      SoundEffect.ENEMYSHOT2.stop();</span>
+    }
+<span class="fc bfc" id="L172" title="All 2 branches covered.">    if (SoundEffect.EXPLOSION.isRunning()){</span>
+<span class="fc" id="L173">      SoundEffect.EXPLOSION.stop();</span>
+    }
+<span class="fc bfc" id="L175" title="All 2 branches covered.">    if (SoundEffect.EXPLOSION2.isRunning()){</span>
+<span class="fc" id="L176">      SoundEffect.EXPLOSION2.stop();</span>
+    }
+<span class="fc" id="L178">  }</span>
+
+  public boolean isEncouraging(){
+<span class="fc" id="L181">    boolean answer = false;</span>
+<span class="fc bfc" id="L182" title="All 2 branches covered.">    for(SoundEffect sound:encouragementSounds){</span>
+<span class="fc bfc" id="L183" title="All 2 branches covered.">      if (sound.isRunning()){</span>
+<span class="fc" id="L184">        answer = true;</span>
+      }
+    }
+<span class="fc" id="L187">    return answer;</span>
+  }
+
+  public SoundEffect[] getTankShotSounds(){
+<span class="fc" id="L191">    return this.tankShotSounds;</span>
+  }
+  public SoundEffect[] getNextLevelSounds(){
+<span class="fc" id="L194">    return this.nextLevelSounds;</span>
+  }
+  public SoundEffect[] getEncouragementSounds(){
+<span class="fc" id="L197">    return this.encouragementSounds;</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

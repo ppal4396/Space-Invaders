@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="invadem.SwarmTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2019-11-18T11:40:22" hostname="Preethoms-MBP.gateway" time="0.007">
+  <properties/>
+  <testcase name="testSwarmGetRandomInvader" classname="invadem.SwarmTest" time="0.006"/>
+  <testcase name="testSwarmLoses" classname="invadem.SwarmTest" time="0.0"/>
+  <testcase name="testSwarmSpawn" classname="invadem.SwarmTest" time="0.0"/>
+  <testcase name="testSwarmSteps" classname="invadem.SwarmTest" time="0.0"/>
+  <testcase name="testSwarmConstruction" classname="invadem.SwarmTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

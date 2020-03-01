@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProjectileMatrix.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">program</a> &gt; <a href="index.source.html" class="el_package">invadem</a> &gt; <span class="el_source">ProjectileMatrix.java</span></div><h1>ProjectileMatrix.java</h1><pre class="source lang-java linenums">package invadem;
+import java.util.List;
+import java.util.ArrayList;
+import processing.core.PApplet;
+import processing.core.PImage;
+
+public class ProjectileMatrix extends DrawableObject{
+
+  private List&lt;Projectile&gt; tankProjectiles;
+  private List&lt;Projectile&gt; enemyProjectiles;
+  private PImage projSprite;
+  private PImage powerProjSprite;
+
+  public ProjectileMatrix(PImage projSprite, PImage powerProjSprite){
+<span class="fc" id="L15">    super(0, 0);</span>
+<span class="fc" id="L16">    this.projSprite = projSprite;</span>
+<span class="fc" id="L17">    this.powerProjSprite = powerProjSprite;</span>
+<span class="fc" id="L18">    this.tankProjectiles = new ArrayList&lt;Projectile&gt;();</span>
+<span class="fc" id="L19">    this.enemyProjectiles = new ArrayList&lt;Projectile&gt;();</span>
+<span class="fc" id="L20">    this.tickRate = 300;</span>
+<span class="fc" id="L21">  }</span>
+
+  public void setLevelSpeed(Score level){
+<span class="fc bfc" id="L24" title="All 2 branches covered.">    if (level.getScore() == 1){</span>
+<span class="fc" id="L25">      this.tickRate = 300;</span>
+    }
+<span class="fc bfc" id="L27" title="All 2 branches covered.">    else if (this.tickRate &gt; 60){</span>
+<span class="fc" id="L28">      this.tickRate = 300 - ((level.getScore() - 1) * 60);</span>
+    }
+<span class="fc" id="L30">  }</span>
+
+  public void addTankProjectile(Tank tank){
+<span class="fc" id="L33">    this.tankProjectiles.add(new Projectile(projSprite, tank.getX() + 11, tank.getY() - 3, 1, 3));</span>
+<span class="fc" id="L34">  }</span>
+  public void addInvaderProjectile(App app){
+<span class="fc" id="L36">    Invader invader = app.getSwarm().getRandomInvader();</span>
+<span class="fc" id="L37">    Projectile enemyProj = new Projectile(projSprite, invader.getX() + 8, invader.getY() + 16, 1 , 3);</span>
+<span class="fc" id="L38">    enemyProj.setEnemyProjectile();</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">    if (invader.isPowered()){</span>
+<span class="fc" id="L40">      enemyProj.setPowered(powerProjSprite);</span>
+    }
+<span class="fc" id="L42">    this.enemyProjectiles.add(enemyProj);</span>
+
+<span class="fc" id="L44">    app.getAudioPlayer().playEnemyShot(enemyProj.isPowered());</span>
+<span class="fc" id="L45">  }</span>
+
+  public List&lt;Projectile&gt; getTankProjectiles(){
+<span class="fc" id="L48">    return this.tankProjectiles;</span>
+  }
+  public List&lt;Projectile&gt; getEnemyProjectiles(){
+<span class="fc" id="L51">    return this.enemyProjectiles;</span>
+  }
+
+
+
+  public void updateInvaderCollisions(App app){
+<span class="fc" id="L57">    List&lt;Invader&gt; invaders = app.getSwarm().getInvaderList();</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">    for(int i = 0; i &lt; invaders.size(); i ++){</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">      for(int j = 0; j &lt; tankProjectiles.size(); j++){</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        if (checkCollision(invaders.get(i), tankProjectiles.get(j))){</span>
+<span class="fc" id="L61">            boolean armourDead = invaders.get(i).sustainDamage();</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">            if (armourDead){</span>
+<span class="fc" id="L63">              app.getMenu().addPoints(invaders.get(i).isArmoured(), invaders.get(i).isPowered());</span>
+<span class="fc" id="L64">              invaders.remove(i);</span>
+<span class="fc" id="L65">              app.getAudioPlayer().playInvaderExplosion();</span>
+            }
+<span class="fc" id="L67">          tankProjectiles.remove(j);</span>
+
+<span class="fc bfc" id="L69" title="All 2 branches covered.">          if(invaders.size() == 0){</span>
+<span class="fc" id="L70">            app.getSwarm().setLose();</span>
+<span class="fc" id="L71">            break;</span>
+          }
+          else{
+<span class="fc bfc" id="L74" title="All 2 branches covered.">            if(i != 0){</span>
+<span class="fc" id="L75">              i --;</span>
+            }
+<span class="fc bfc" id="L77" title="All 2 branches covered.">            if(j != 0){</span>
+<span class="fc" id="L78">              j --;</span>
+            }
+          }
+        }
+      }
+    }
+<span class="fc" id="L84">  }</span>
+
+  public void updateBarrierCollisions(App app){
+<span class="fc" id="L87">    List&lt;Barrier&gt; barriers = app.getBarriers();</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">    for(Barrier barrier:barriers){</span>
+
+<span class="fc bfc" id="L90" title="All 2 branches covered.">      for(BarrierComponent component:barrier){</span>
+<span class="fc bfc" id="L91" title="All 2 branches covered.">        for(int i = 0; i &lt; enemyProjectiles.size(); i++ ){</span>
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">          if (!component.isDestroyed()){</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">            if(checkCollision(component, enemyProjectiles.get(i))){</span>
+<span class="pc bpc" id="L94" title="1 of 2 branches missed.">              if (enemyProjectiles.get(i).isPowered()){</span>
+<span class="nc" id="L95">                component.instaKill();</span>
+              }
+              else{
+<span class="fc" id="L98">                component.sustainDamage();</span>
+              }
+<span class="fc" id="L100">              app.getAudioPlayer().playExplosion();</span>
+<span class="fc" id="L101">              enemyProjectiles.remove(i);</span>
+<span class="fc" id="L102">              i --;</span>
+            }
+          }
+        }
+<span class="fc bfc" id="L106" title="All 2 branches covered.">        for(int i = 0; i &lt; tankProjectiles.size(); i++){</span>
+<span class="pc bpc" id="L107" title="1 of 2 branches missed.">          if(!component.isDestroyed()){</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">            if(checkCollision(component, tankProjectiles.get(i))){</span>
+<span class="fc" id="L109">              component.sustainDamage();</span>
+<span class="fc" id="L110">              app.getAudioPlayer().playExplosion();</span>
+<span class="fc" id="L111">              tankProjectiles.remove(i);</span>
+<span class="fc" id="L112">              i --;</span>
+            }
+          }
+        }
+<span class="fc" id="L116">      }</span>
+
+<span class="fc" id="L118">    }</span>
+<span class="fc" id="L119">  }</span>
+
+  public void updateTankCollisions(App app){
+<span class="fc bfc" id="L122" title="All 2 branches covered.">    for(int i = 0; i &lt; enemyProjectiles.size(); i++){</span>
+<span class="fc bfc" id="L123" title="All 2 branches covered.">      if(checkCollision(app.getPlayerOne(), enemyProjectiles.get(i))){</span>
+<span class="fc bfc" id="L124" title="All 2 branches covered.">        if(enemyProjectiles.get(i).isPowered()){</span>
+<span class="fc" id="L125">          app.getPlayerOne().instaKill();</span>
+        }
+        else{
+<span class="fc" id="L128">          app.getPlayerOne().sustainDamage();</span>
+        }
+<span class="fc" id="L130">        app.getAudioPlayer().playTankDamage();</span>
+<span class="fc" id="L131">        enemyProjectiles.remove(i);</span>
+<span class="fc" id="L132">        i--;</span>
+      }
+    }
+<span class="fc" id="L135">  }</span>
+
+  public void updatePlayerShots(App app){
+<span class="fc" id="L138">    PlayerOne player1 = app.getPlayerOne();</span>
+<span class="pc bpc" id="L139" title="2 of 6 branches missed.">    if (player1.isShooting() &amp;&amp; player1.isReloaded() &amp;&amp; !app.getMenu().isInTransition()){</span>
+<span class="fc" id="L140">      addTankProjectile(player1);</span>
+<span class="fc" id="L141">      app.getAudioPlayer().playTankShot();</span>
+<span class="fc" id="L142">      player1.finishShooting();</span>
+    }
+<span class="fc" id="L144">  }</span>
+
+  public void clearAllShots(){
+<span class="fc" id="L147">      this.tankProjectiles = new ArrayList&lt;Projectile&gt;();</span>
+<span class="fc" id="L148">      this.enemyProjectiles = new ArrayList&lt;Projectile&gt;();</span>
+<span class="fc" id="L149">  }</span>
+
+  public void generateSwarmShot(App app){
+    //if there is at least one invader alive, create new enemy projectile.
+<span class="pc bpc" id="L153" title="1 of 4 branches missed.">    if (app.getSwarm().getInvaderList().size() &gt; 0 &amp;&amp; !(app.getMenu().isInTransition())){</span>
+<span class="fc" id="L154">      addInvaderProjectile(app);</span>
+    }
+<span class="fc" id="L156">  }</span>
+
+  public void updateOffScreen(App app){
+    //if a projectile goes off screen, remove it from the projectile matrix.
+<span class="fc bfc" id="L160" title="All 2 branches covered.">    for(int i = 0; i &lt; this.tankProjectiles.size(); i++){</span>
+<span class="fc bfc" id="L161" title="All 2 branches covered.">        if (this.tankProjectiles.get(i).getY() &lt; 0){</span>
+<span class="fc" id="L162">          this.tankProjectiles.remove(i);</span>
+<span class="pc bpc" id="L163" title="1 of 2 branches missed.">          if (tankProjectiles.size() == 0){</span>
+<span class="nc" id="L164">            break;</span>
+          }
+<span class="fc" id="L166">          i--;</span>
+        }
+    }
+<span class="fc bfc" id="L169" title="All 2 branches covered.">    for(int i = 0; i &lt; this.enemyProjectiles.size(); i++){</span>
+<span class="fc bfc" id="L170" title="All 2 branches covered.">        if(this.enemyProjectiles.get(i).getY() &gt; 480){</span>
+<span class="fc" id="L171">          this.enemyProjectiles.remove(i);</span>
+<span class="pc bpc" id="L172" title="1 of 2 branches missed.">          if (enemyProjectiles.size() == 0){</span>
+<span class="nc" id="L173">            break;</span>
+          }
+<span class="fc" id="L175">          i--;</span>
+      }
+    }
+<span class="fc" id="L178">  }</span>
+
+  public int getTickRate(){
+<span class="fc" id="L181">    return this.tickRate;</span>
+  }
+
+  public void fastTick(App app){
+<span class="fc" id="L185">    updatePlayerShots(app);</span>
+<span class="fc" id="L186">    updateInvaderCollisions(app);</span>
+<span class="fc" id="L187">    updateBarrierCollisions(app);</span>
+<span class="fc" id="L188">    updateTankCollisions(app);</span>
+<span class="fc" id="L189">  }</span>
+
+  public void slowTick(App app){
+<span class="fc" id="L192">    generateSwarmShot(app);</span>
+<span class="fc" id="L193">    updateOffScreen(app);</span>
+<span class="fc" id="L194">  }</span>
+
+  public void draw(App app){
+<span class="fc bfc" id="L197" title="All 2 branches covered.">    for(Projectile proj:tankProjectiles){</span>
+<span class="fc" id="L198">      proj.draw(app);</span>
+<span class="fc" id="L199">    }</span>
+<span class="fc bfc" id="L200" title="All 2 branches covered.">    for(Projectile proj:enemyProjectiles){</span>
+<span class="fc" id="L201">      proj.draw(app);</span>
+<span class="fc" id="L202">    }</span>
+
+<span class="fc" id="L204">    fastTick(app);</span>
+
+<span class="fc bfc" id="L206" title="All 2 branches covered.">    if (tickFrame()){</span>
+<span class="fc" id="L207">      slowTick(app);</span>
+    }
+<span class="fc" id="L209">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

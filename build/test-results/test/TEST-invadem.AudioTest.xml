@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="invadem.AudioTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2019-11-18T11:40:06" hostname="Preethoms-MBP.gateway" time="0.72">
+  <properties/>
+  <testcase name="testTankShotSound" classname="invadem.AudioTest" time="0.001"/>
+  <testcase name="testTankDamageSound" classname="invadem.AudioTest" time="0.0"/>
+  <testcase name="testComponentExplosion" classname="invadem.AudioTest" time="0.001"/>
+  <testcase name="testNextLevelSounds" classname="invadem.AudioTest" time="0.657"/>
+  <testcase name="testEnemyShotSound" classname="invadem.AudioTest" time="0.0"/>
+  <testcase name="testGameOverSound" classname="invadem.AudioTest" time="0.058"/>
+  <testcase name="testInvaderExplosion" classname="invadem.AudioTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

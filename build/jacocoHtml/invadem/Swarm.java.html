@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Swarm.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">program</a> &gt; <a href="index.source.html" class="el_package">invadem</a> &gt; <span class="el_source">Swarm.java</span></div><h1>Swarm.java</h1><pre class="source lang-java linenums">package invadem;
+import processing.core.PApplet;
+import processing.core.PImage;
+import java.util.Random;
+import java.util.List;
+import java.util.ArrayList;
+
+public class Swarm extends DrawableObject{
+
+  private List&lt;Invader&gt; invaderSwarm;
+  private int stepsMade;
+  private boolean movingLeft;
+  private Random random;
+  private PImage normalSprite1;
+  private PImage normalSprite2;
+  private PImage powerSprite1;
+  private PImage powerSprite2;
+  private PImage armouredSprite1;
+  private PImage armouredSprite2;
+  private boolean swarmSuccess;
+  private boolean swarmFailure;
+
+  public Swarm(int x, int y, PImage normalSprite1, PImage normalSprite2,
+  PImage powerSprite1, PImage powerSprite2, PImage armouredSprite1,
+  PImage armouredSprite2){
+<span class="fc" id="L26">    super(x, y);</span>
+<span class="fc" id="L27">    this.normalSprite1 = normalSprite1;</span>
+<span class="fc" id="L28">    this.normalSprite2 = normalSprite2;</span>
+<span class="fc" id="L29">    this.powerSprite1 = powerSprite1;</span>
+<span class="fc" id="L30">    this.powerSprite2 = powerSprite2;</span>
+<span class="fc" id="L31">    this.armouredSprite1 = armouredSprite1;</span>
+<span class="fc" id="L32">    this.armouredSprite2 = armouredSprite2;</span>
+<span class="fc" id="L33">    this.invaderSwarm = new ArrayList&lt;Invader&gt;();</span>
+<span class="fc" id="L34">    spawn();</span>
+<span class="fc" id="L35">    this.random = new Random();</span>
+<span class="fc" id="L36">    this.tickRate = 2;</span>
+<span class="fc" id="L37">  }</span>
+
+  public void spawn(){
+<span class="pc bpc" id="L40" title="1 of 2 branches missed.">    if (this.invaderSwarm.size() &gt; 0){</span>
+<span class="nc" id="L41">      this.invaderSwarm = new ArrayList&lt;Invader&gt;();</span>
+    }
+<span class="fc bfc" id="L43" title="All 2 branches covered.">    for (int i = 0; i &lt; 4; i ++){</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">        for(int j = 0; j &lt; 10; j++){</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">          if (i == 0){</span>
+<span class="fc" id="L46">            Invader invader = new ArmouredInvader(x + (32*j), y + (i*32), 16, 16);</span>
+<span class="fc" id="L47">            this.invaderSwarm.add(invader);</span>
+<span class="fc" id="L48">          }</span>
+          else{
+<span class="fc bfc" id="L50" title="All 2 branches covered.">            if (i == 1){</span>
+<span class="fc" id="L51">              Invader invader = new PowerInvader(x + (32*j), y + (i*32), 16, 16);</span>
+<span class="fc" id="L52">              this.invaderSwarm.add(invader);</span>
+<span class="fc" id="L53">            }</span>
+            else{
+<span class="fc" id="L55">              Invader invader = new SimpleInvader(x + (32*j), y + (i*32), 16, 16);</span>
+<span class="fc" id="L56">              this.invaderSwarm.add(invader);</span>
+            }
+          }
+        }
+    }
+<span class="fc" id="L61">    setAllSprites();</span>
+<span class="fc" id="L62">    this.stepsMade = 0;</span>
+<span class="fc" id="L63">    this.movingLeft = true;</span>
+<span class="fc" id="L64">    this.swarmSuccess = false;</span>
+<span class="fc" id="L65">    this.swarmFailure = false;</span>
+<span class="fc" id="L66">  }</span>
+
+
+  public void removeAllInvaders(){
+<span class="fc" id="L70">    this.invaderSwarm = new ArrayList&lt;Invader&gt;();</span>
+<span class="fc" id="L71">  }</span>
+
+  public void setAllSprites(){
+<span class="fc bfc" id="L74" title="All 2 branches covered.">    for(Invader invader: this.invaderSwarm){</span>
+<span class="fc bfc" id="L75" title="All 2 branches covered.">        if (invader.isPowered()){</span>
+<span class="fc" id="L76">          invader.setSprites(powerSprite1, powerSprite2);</span>
+        }
+<span class="fc bfc" id="L78" title="All 2 branches covered.">        else if (invader.isArmoured()){</span>
+<span class="fc" id="L79">          invader.setSprites(armouredSprite1, armouredSprite2);</span>
+        }
+        else{
+<span class="fc" id="L82">          invader.setSprites(normalSprite1, normalSprite2);</span>
+        }
+<span class="fc" id="L84">    }</span>
+<span class="fc" id="L85">  }</span>
+
+  public Invader getRandomInvader(){
+<span class="fc" id="L88">    int randomInt = this.random.nextInt(invaderSwarm.size());</span>
+<span class="fc" id="L89">    return this.invaderSwarm.get(randomInt);</span>
+  }
+
+  public List&lt;Invader&gt; getInvaderList(){
+<span class="fc" id="L93">    return this.invaderSwarm;</span>
+  }
+
+  public int getSize(){
+<span class="nc" id="L97">    return this.invaderSwarm.size();</span>
+  }
+
+  public void stepAll(){
+<span class="fc bfc" id="L101" title="All 2 branches covered.">    if (this.stepsMade != 30){</span>
+<span class="fc bfc" id="L102" title="All 2 branches covered.">      for(Invader invader:this.invaderSwarm){</span>
+<span class="fc bfc" id="L103" title="All 2 branches covered.">        if(movingLeft){</span>
+<span class="fc" id="L104">          invader.moveLeft();</span>
+        }
+        else{
+<span class="fc" id="L107">          invader.moveRight();</span>
+        }
+<span class="fc" id="L109">      }</span>
+<span class="fc" id="L110">      this.stepsMade += 1;</span>
+<span class="fc bfc" id="L111" title="All 2 branches covered.">      if (stepsMade == 30){</span>
+<span class="fc" id="L112">        this.tickRate = 1;</span>
+      }
+    }
+    else {
+<span class="fc bfc" id="L116" title="All 2 branches covered.">      for(Invader invader:this.invaderSwarm){</span>
+<span class="fc" id="L117">        invader.moveDown();</span>
+<span class="fc" id="L118">        invader.changeSprite();</span>
+<span class="fc" id="L119">      }</span>
+<span class="pc bpc" id="L120" title="1 of 2 branches missed.">      if(movingLeft){</span>
+<span class="fc" id="L121">        this.movingLeft = false;</span>
+      }
+      else{
+<span class="nc" id="L124">        this.movingLeft = true;</span>
+      }
+<span class="fc" id="L126">      this.stepsMade = 0;</span>
+<span class="fc" id="L127">      this.tickRate = 2;</span>
+    }
+<span class="fc" id="L129">  }</span>
+
+  public void checkSwarmProgress(App app){
+<span class="fc bfc" id="L132" title="All 2 branches covered.">    for(Invader invader:this.invaderSwarm){</span>
+<span class="fc bfc" id="L133" title="All 2 branches covered.">      if (invader.getY() + 16 &gt;= app.getBarriers().get(0).getY()){</span>
+<span class="fc" id="L134">        this.swarmSuccess = true;</span>
+      }
+<span class="fc" id="L136">    }</span>
+<span class="fc" id="L137">  }</span>
+
+  public boolean hasWon(){
+<span class="fc" id="L140">    return this.swarmSuccess;</span>
+  }
+
+  public boolean hasLost(){
+<span class="fc" id="L144">    return this.swarmFailure;</span>
+  }
+
+  public void setLose(){
+<span class="fc" id="L148">    this.swarmFailure = true;</span>
+<span class="fc" id="L149">  }</span>
+
+  public void fastTick(App app){
+<span class="fc" id="L152">    checkSwarmProgress(app);</span>
+<span class="fc" id="L153">  }</span>
+  public void slowTick(App app){
+<span class="fc" id="L155">    stepAll();</span>
+<span class="fc" id="L156">  }</span>
+
+  public void draw(App app){
+<span class="fc bfc" id="L159" title="All 2 branches covered.">      for(int i = 0; i &lt; invaderSwarm.size(); i++){</span>
+<span class="fc" id="L160">          invaderSwarm.get(i).draw(app);</span>
+      }
+<span class="fc" id="L162">      fastTick(app);</span>
+<span class="fc bfc" id="L163" title="All 2 branches covered.">      if(tickFrame()){</span>
+<span class="fc" id="L164">        slowTick(app);</span>
+      }
+<span class="fc" id="L166">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

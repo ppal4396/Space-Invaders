@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>App.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">program</a> &gt; <a href="index.source.html" class="el_package">invadem</a> &gt; <span class="el_source">App.java</span></div><h1>App.java</h1><pre class="source lang-java linenums">package invadem;
+
+import processing.core.PApplet;
+import processing.core.PImage;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
+import processing.core.PFont;
+
+
+public class App extends PApplet {
+    PlayerOne player1;
+    Barrier leftBarrier;
+    Barrier middleBarrier;
+    Barrier rightBarrier;
+    Swarm invaderSwarm;
+    ProjectileMatrix projMatrix;
+    Menu menu;
+    List&lt;DrawableObject&gt; drawObjects; //[1x tank, 3 x barriers, 1x swarm of invaders, 1x projectile matrix, 1x menu]
+
+    AudioPlayer audioPlayer;
+    boolean[] keys;
+
+
+
+<span class="fc" id="L26">    public App() {</span>
+<span class="fc" id="L27">      leftBarrier = new Barrier(200, 420);</span>
+<span class="fc" id="L28">      middleBarrier = new Barrier(309, 420);</span>
+<span class="fc" id="L29">      rightBarrier = new Barrier(418, 420);</span>
+
+<span class="fc" id="L31">      menu = new Menu(0, 0);</span>
+<span class="fc" id="L32">      drawObjects = new ArrayList&lt;&gt;();</span>
+
+<span class="fc" id="L34">      audioPlayer = new AudioPlayer();</span>
+<span class="fc" id="L35">      keys = new boolean[256];</span>
+
+
+
+<span class="fc" id="L39">    }</span>
+
+    public void setup() {
+<span class="fc" id="L42">        frameRate(60);</span>
+<span class="fc" id="L43">        PImage emptySprite = loadImage(&quot;empty.png&quot;);</span>
+<span class="fc" id="L44">        player1 = new PlayerOne(loadImage(&quot;tank1.png&quot;), 309, 454, 22, 16, emptySprite);</span>
+<span class="fc" id="L45">        drawObjects.add(player1);</span>
+
+<span class="fc" id="L47">        PImage[] leftComponentSprites = new PImage[3];</span>
+<span class="fc" id="L48">        PImage[] rightComponentSprites = new PImage[3];</span>
+<span class="fc" id="L49">        PImage[] solidComponentSprites = new PImage[3];</span>
+<span class="fc" id="L50">        leftComponentSprites[0] = loadImage(&quot;barrier_left1.png&quot;);</span>
+<span class="fc" id="L51">        leftComponentSprites[1] = loadImage(&quot;barrier_Left2.png&quot;);</span>
+<span class="fc" id="L52">        leftComponentSprites[2] = loadImage(&quot;barrier_Left3.png&quot;);</span>
+<span class="fc" id="L53">        rightComponentSprites[0] = loadImage(&quot;barrier_right1.png&quot;);</span>
+<span class="fc" id="L54">        rightComponentSprites[1] = loadImage(&quot;barrier_right2.png&quot;);</span>
+<span class="fc" id="L55">        rightComponentSprites[2] = loadImage(&quot;barrier_right3.png&quot;);</span>
+<span class="fc" id="L56">        solidComponentSprites[0] = loadImage(&quot;barrier_solid1.png&quot;);</span>
+<span class="fc" id="L57">        solidComponentSprites[1] = loadImage(&quot;barrier_solid2.png&quot;);</span>
+<span class="fc" id="L58">        solidComponentSprites[2] = loadImage(&quot;barrier_solid3.png&quot;);</span>
+
+
+<span class="fc" id="L61">        leftBarrier.setComponentSprites(leftComponentSprites, rightComponentSprites, solidComponentSprites, emptySprite);</span>
+<span class="fc" id="L62">        middleBarrier.setComponentSprites(leftComponentSprites, rightComponentSprites, solidComponentSprites, emptySprite);</span>
+<span class="fc" id="L63">        rightBarrier.setComponentSprites(leftComponentSprites, rightComponentSprites, solidComponentSprites, emptySprite);</span>
+<span class="fc" id="L64">        drawObjects.add(leftBarrier);</span>
+<span class="fc" id="L65">        drawObjects.add(middleBarrier);</span>
+<span class="fc" id="L66">        drawObjects.add(rightBarrier);</span>
+
+<span class="fc" id="L68">        invaderSwarm = new Swarm(184, 0, loadImage(&quot;invader1.png&quot;), loadImage(&quot;invader2.png&quot;),</span>
+<span class="fc" id="L69">        loadImage(&quot;invader1_power.png&quot;), loadImage(&quot;invader2_power.png&quot;),</span>
+<span class="fc" id="L70">        loadImage(&quot;invader1_armoured.png&quot;), loadImage(&quot;invader2_armoured.png&quot;));</span>
+
+<span class="fc" id="L72">        drawObjects.add(invaderSwarm);</span>
+
+<span class="fc" id="L74">        projMatrix = new ProjectileMatrix(loadImage(&quot;projectile.png&quot;), loadImage(&quot;projectile_lg.png&quot;));</span>
+<span class="fc" id="L75">        drawObjects.add(projMatrix);</span>
+
+<span class="fc" id="L77">        PFont gameFont = createFont(&quot;PressStart2P-Regular.ttf&quot;, 8);</span>
+<span class="fc" id="L78">        textFont(gameFont);</span>
+<span class="fc" id="L79">        menu.prepareDisplays(loadImage(&quot;gameover.png&quot;), loadImage(&quot;nextlevel.png&quot;), emptySprite);</span>
+<span class="fc" id="L80">        drawObjects.add(menu);</span>
+
+
+
+
+
+<span class="fc" id="L86">    }</span>
+
+    public void settings() {
+<span class="fc" id="L89">        size(640, 480);</span>
+<span class="fc" id="L90">    }</span>
+
+    public void draw() {
+<span class="fc" id="L93">        background(0);</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">        for(DrawableObject obj: drawObjects){</span>
+<span class="fc" id="L95">            obj.draw(this);</span>
+<span class="fc" id="L96">        }</span>
+<span class="fc" id="L97">    }</span>
+
+    public void keyPressed(){
+      //index in keys[] with ASCII value of last key pressed will save true until released (see keyReleased()).
+      //Indices 128 and 129 added for special keys LEFT and RIGHT.
+<span class="nc bnc" id="L102" title="All 2 branches missed.">        if (key == CODED){</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">          if (keyCode == LEFT){</span>
+<span class="nc" id="L104">            keys[128] = true;</span>
+          }
+<span class="nc bnc" id="L106" title="All 2 branches missed.">          if (keyCode == RIGHT){</span>
+<span class="nc" id="L107">            keys[129] = true;</span>
+          }
+        }
+        else{
+<span class="nc" id="L111">          keys[key] = true;</span>
+        }
+<span class="nc" id="L113">        player1.handleKeyEvent(keys);</span>
+<span class="nc" id="L114">    }</span>
+
+    public void keyReleased(){
+      //index in keys[] with ASCII value of last key released will save false until pressed (see keyPressed()).
+      // Indices 128 and 129 added for special keys LEFT and RIGHT.
+<span class="nc bnc" id="L119" title="All 2 branches missed.">        if (key == CODED){</span>
+<span class="nc bnc" id="L120" title="All 2 branches missed.">          if (keyCode == LEFT){</span>
+<span class="nc" id="L121">            keys[128] = false;</span>
+          }
+<span class="nc bnc" id="L123" title="All 2 branches missed.">          if (keyCode == RIGHT){</span>
+<span class="nc" id="L124">            keys[129] = false;</span>
+          }
+        }
+        else{
+<span class="nc" id="L128">          keys[key] = false;</span>
+        }
+<span class="nc" id="L130">        player1.handleKeyEvent(keys);</span>
+<span class="nc" id="L131">    }</span>
+
+    public Swarm getSwarm(){
+<span class="fc" id="L134">      return invaderSwarm;</span>
+    }
+
+    public PlayerOne getPlayerOne(){
+<span class="fc" id="L138">      return player1;</span>
+    }
+
+    public List&lt;Barrier&gt; getBarriers(){
+<span class="fc" id="L142">      List&lt;Barrier&gt; barriers = Arrays.asList(leftBarrier, middleBarrier, rightBarrier);</span>
+<span class="fc" id="L143">      return barriers;</span>
+    }
+
+    public Menu getMenu(){
+<span class="fc" id="L147">      return menu;</span>
+    }
+
+    public ProjectileMatrix getProjMatrix(){
+<span class="fc" id="L151">      return projMatrix;</span>
+    }
+
+    public AudioPlayer getAudioPlayer(){
+<span class="fc" id="L155">      return audioPlayer;</span>
+    }
+
+
+    public static void main(String[] args) {
+<span class="nc" id="L160">        PApplet.main(&quot;invadem.App&quot;);</span>
+<span class="nc" id="L161">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

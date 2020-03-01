@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="invadem.ProjectileMatrixTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2019-11-18T11:40:22" hostname="Preethoms-MBP.gateway" time="0.0">
+  <properties/>
+  <testcase name="testProjectileMatrixConstruction" classname="invadem.ProjectileMatrixTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

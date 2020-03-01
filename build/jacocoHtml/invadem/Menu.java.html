@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Menu.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">program</a> &gt; <a href="index.source.html" class="el_package">invadem</a> &gt; <span class="el_source">Menu.java</span></div><h1>Menu.java</h1><pre class="source lang-java linenums">package invadem;
+
+import processing.core.PApplet;
+import processing.core.PImage;
+import java.util.List;
+import java.util.Arrays;
+import java.util.Iterator;
+
+
+public class Menu extends DrawableObject implements Iterable&lt;MenuObject&gt;{
+  private TransitionImage gameOver;
+  private TransitionImage nextLevel;
+  private Score currentScore;
+  private Score highScore;
+  private Score level;
+  private List&lt;MenuObject&gt; menuObjects;
+  private boolean inTransition;
+
+  public Menu(int x, int y){
+<span class="fc" id="L20">    super(x, y);</span>
+<span class="fc" id="L21">    this.gameOver = new TransitionImage(208, 208, 224, 32);</span>
+<span class="fc" id="L22">    this.nextLevel = new TransitionImage(208, 208, 224, 32);</span>
+<span class="fc" id="L23">    this.currentScore = new Score(10, 10, 170, 100);</span>
+<span class="fc" id="L24">    this.highScore = new Score(490, 10, 170, 100);</span>
+<span class="fc" id="L25">    this.level = new Score(10, 462, 170, 100);</span>
+<span class="fc" id="L26">    this.menuObjects = Arrays.asList(gameOver, nextLevel, currentScore, highScore, level);</span>
+<span class="fc" id="L27">    this.inTransition = false;</span>
+<span class="fc" id="L28">    this.tickRate = 120;</span>
+<span class="fc" id="L29">  }</span>
+
+  public void prepareDisplays(PImage gameOverImg, PImage nextLevelImg, PImage emptySprite){
+<span class="fc" id="L32">    this.gameOver.setDisplay(gameOverImg, emptySprite);</span>
+<span class="fc" id="L33">    this.nextLevel.setDisplay(nextLevelImg, emptySprite);</span>
+<span class="fc" id="L34">    this.currentScore.setDisplay(&quot;current score: &quot;, 0);</span>
+<span class="fc" id="L35">    this.highScore.setDisplay(&quot;high Score: &quot;, 10000);</span>
+<span class="fc" id="L36">    this.level.setDisplay(&quot;Level &quot;, 1);</span>
+<span class="fc" id="L37">  }</span>
+
+  public Iterator&lt;MenuObject&gt; iterator(){
+<span class="fc" id="L40">    return this.menuObjects.iterator();</span>
+  }
+
+  public void addPoints(boolean armouredInvader, boolean poweredInvader){
+<span class="fc bfc" id="L44" title="All 4 branches covered.">    if (armouredInvader || poweredInvader){</span>
+<span class="fc" id="L45">      this.currentScore.add(250);</span>
+    }
+    else{
+<span class="fc" id="L48">      this.currentScore.add(100);</span>
+    }
+<span class="fc" id="L50">    this.currentScore.display();</span>
+<span class="fc" id="L51">  }</span>
+
+  public void checkEncouragement(App app){
+    //encourages the player based on current score
+<span class="fc" id="L55">    app.getAudioPlayer().playEncouragement(currentScore);</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">    if (app.getAudioPlayer().isEncouraging()){</span>
+<span class="fc" id="L57">      app.getAudioPlayer().muteShotsAndExplosions();</span>
+    }
+<span class="fc" id="L59">  }</span>
+
+  public int getLevel(){
+<span class="fc" id="L62">    return this.level.getScore();</span>
+  }
+
+  public Score getCurrentScore(){
+<span class="fc" id="L66">    return this.currentScore;</span>
+  }
+
+  public Score getHighScore(){
+<span class="fc" id="L70">    return this.highScore;</span>
+  }
+
+  public void clearScreen(App app){
+<span class="fc bfc" id="L74" title="All 2 branches covered.">    for(Barrier barrier:app.getBarriers()){</span>
+<span class="fc" id="L75">      barrier.clearComponents();</span>
+<span class="fc" id="L76">    }</span>
+<span class="fc" id="L77">    app.getSwarm().removeAllInvaders();</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">    if(!app.getPlayerOne().isDead()){</span>
+<span class="fc" id="L79">      app.getPlayerOne().clearSprite();</span>
+    }
+<span class="fc" id="L81">    app.getProjMatrix().clearAllShots();</span>
+<span class="fc" id="L82">  }</span>
+
+  public void gameOverTransition(App app){
+<span class="fc" id="L85">    this.inTransition = true;</span>
+<span class="fc" id="L86">    clearScreen(app);</span>
+<span class="fc" id="L87">    this.gameOver.display();</span>
+<span class="fc" id="L88">    app.getAudioPlayer().playGameOver();</span>
+<span class="fc bfc" id="L89" title="All 2 branches covered.">    if(currentScore.getScore() &gt; highScore.getScore()){</span>
+<span class="fc" id="L90">      highScore.setScore(currentScore.getScore());</span>
+    }
+<span class="fc" id="L92">    this.currentScore.reset();</span>
+<span class="fc" id="L93">    this.level.setScore(1);</span>
+<span class="fc" id="L94">    app.getAudioPlayer().resetEncouragement();</span>
+
+<span class="fc" id="L96">  }</span>
+
+  public void nextLevelTransition(App app){
+<span class="fc" id="L99">    this.inTransition = true;</span>
+<span class="fc" id="L100">    clearScreen(app);</span>
+<span class="fc" id="L101">    this.nextLevel.display();</span>
+<span class="fc" id="L102">    app.getAudioPlayer().playNextLevel(level);</span>
+<span class="fc" id="L103">    this.level.add(1);</span>
+
+
+<span class="fc" id="L106">  }</span>
+
+  public boolean isInTransition(){
+<span class="fc" id="L109">    return this.inTransition;</span>
+  }
+
+  public void endTransition(App app){
+<span class="fc bfc" id="L113" title="All 2 branches covered.">      if(tickFrame()){</span>
+<span class="fc" id="L114">        this.inTransition = false;</span>
+<span class="fc" id="L115">        this.gameOver.hide();</span>
+<span class="fc" id="L116">        this.nextLevel.hide();</span>
+<span class="fc" id="L117">        this.currentScore.display();</span>
+<span class="fc" id="L118">        this.highScore.display();</span>
+<span class="fc" id="L119">        this.level.display();</span>
+<span class="fc" id="L120">        app.getProjMatrix().setLevelSpeed(level);</span>
+<span class="fc" id="L121">        app.getPlayerOne().spawn();</span>
+<span class="fc" id="L122">        app.getSwarm().spawn();</span>
+<span class="fc bfc" id="L123" title="All 2 branches covered.">        for(Barrier barrier:app.getBarriers()){</span>
+<span class="fc" id="L124">          barrier.spawn();</span>
+<span class="fc" id="L125">        }</span>
+      }
+<span class="fc" id="L127">  }</span>
+
+
+  public void tick(App app){
+<span class="fc bfc" id="L131" title="All 2 branches covered.">    if(inTransition){</span>
+<span class="fc" id="L132">      endTransition(app);</span>
+    }
+    else{
+<span class="fc bfc" id="L135" title="All 4 branches covered.">      if (app.getPlayerOne().isDead() || app.getSwarm().hasWon()){</span>
+<span class="fc" id="L136">        gameOverTransition(app);</span>
+      }
+<span class="fc bfc" id="L138" title="All 2 branches covered.">      else if (app.getSwarm().hasLost()){</span>
+<span class="fc" id="L139">        nextLevelTransition(app);</span>
+      }
+<span class="fc" id="L141">      checkEncouragement(app);</span>
+    }
+<span class="fc" id="L143">  }</span>
+
+
+  public void draw(App app){
+<span class="fc bfc" id="L147" title="All 2 branches covered.">    for(MenuObject menuObj:this){</span>
+<span class="fc" id="L148">      menuObj.draw(app);</span>
+<span class="fc" id="L149">    }</span>
+<span class="fc" id="L150">    tick(app);</span>
+<span class="fc" id="L151">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

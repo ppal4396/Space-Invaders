@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="invadem.AppTest" tests="13" skipped="0" failures="0" errors="0" timestamp="2019-11-18T11:40:06" hostname="Preethoms-MBP.gateway" time="15.12">
+  <properties/>
+  <testcase name="testGameOverConditionSwarmReachesEnd" classname="invadem.AppTest" time="0.511"/>
+  <testcase name="testUpdateOffScreen" classname="invadem.AppTest" time="0.583"/>
+  <testcase name="testInvaderTankProjCollision" classname="invadem.AppTest" time="0.665"/>
+  <testcase name="testAppConstruction" classname="invadem.AppTest" time="0.656"/>
+  <testcase name="testPlayerMoveRight" classname="invadem.AppTest" time="0.671"/>
+  <testcase name="testPlayerMoveLeft" classname="invadem.AppTest" time="0.794"/>
+  <testcase name="testSwarmShotGeneration" classname="invadem.AppTest" time="0.771"/>
+  <testcase name="testNextLevelCondition" classname="invadem.AppTest" time="1.031"/>
+  <testcase name="testPlayerShoots" classname="invadem.AppTest" time="1.133"/>
+  <testcase name="testBarrierEnemyProjCollision" classname="invadem.AppTest" time="1.232"/>
+  <testcase name="testBarrierTankProjCollision" classname="invadem.AppTest" time="1.541"/>
+  <testcase name="testGameOverConditionDeadTank" classname="invadem.AppTest" time="2.265"/>
+  <testcase name="testTankEnemyProjCollision" classname="invadem.AppTest" time="3.261"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
