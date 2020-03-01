@@ -18,7 +18,7 @@ plugins {
     id 'edu.sc.seis.launch4j' version '2.4.6'
 
     //for .dmg wrapper
-    id "edu.sc.seis.macAppBundle" version "2.1.0"
+  //  id "edu.sc.seis.macAppBundle" version "2.1.0"
 }
 
 
@@ -56,13 +56,13 @@ dependencies {
 launch4j {
   mainClassName = 'invadem.App'
 }
-macAppBundle {
-    mainClassName = "invadem.App"
-    icon = "icon.icns"
-    bundleJRE = true
-    javaProperties.put("apple.laf.useScreenMenuBar", "true")
-    backgroundImage = "doc/macbackground.png"
-}
+//macAppBundle {
+//    mainClassName = "invadem.App"
+//    icon = "icon.icns"
+//    bundleJRE = true
+//    javaProperties.put("apple.laf.useScreenMenuBar", "true")
+//    backgroundImage = "doc/macbackground.png"
+//}
 
 // Define the main class for the application
 mainClassName = 'invadem.App'
